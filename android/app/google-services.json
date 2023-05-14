@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "150455604508",
+    "project_id": "farmbasefire",
+    "storage_bucket": "farmbasefire.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:150455604508:android:fbf942892d59b477bf96d9",
+        "android_client_info": {
+          "package_name": "com.example.farmbase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "150455604508-psl2v5pdn2t663e5t28t07fg9hdjt5fi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEb1QggUZB2yK6PqQCx9MTAl7UcCiq-_Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "150455604508-psl2v5pdn2t663e5t28t07fg9hdjt5fi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
