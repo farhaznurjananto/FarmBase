@@ -3,15 +3,15 @@ import 'package:farmbase/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ProfileSrceen extends StatefulWidget {
+class ProfileScreen extends StatefulWidget {
   final String uid;
-  const ProfileSrceen({Key? key, required this.uid}) : super(key: key);
+  const ProfileScreen({Key? key, required this.uid}) : super(key: key);
 
   @override
-  State<ProfileSrceen> createState() => _ProfileSrceenState();
+  State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileSrceenState extends State<ProfileSrceen> {
+class _ProfileScreenState extends State<ProfileScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final List<Map<String, dynamic>> _users = [];
 

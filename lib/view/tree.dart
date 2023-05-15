@@ -1,4 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:farmbase/controller/note_controller.dart';
+import 'package:farmbase/model/note_model.dart';
 import 'package:farmbase/view/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -15,14 +17,30 @@ class Tree extends StatefulWidget {
 }
 
 class _TreeState extends State<Tree> {
+  NoteController noteController = NoteController();
+  List<NoteModel> notes = [];
   int _currentIndex = 1;
 
   @override
+  void initState() {
+    super.initState();
+    getNotes();
+  }
+
+  void getNotes() async {
+    List<NoteModel> notes = await noteController.getNotes(widget.uid);
+    setState(() {
+      this.notes = notes;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    print(notes);
     final List<Widget> children = [
       NoteIndexScreen(uid: widget.uid),
       HomeScreen(uid: widget.uid),
-      ProfileSrceen(uid: widget.uid),
+      ProfileScreen(uid: widget.uid),
     ];
 
     return Scaffold(
@@ -54,14 +72,3 @@ class _TreeState extends State<Tree> {
     );
   }
 }
-
-// body: ListView.builder(
-//   itemCount: _users.length,
-//   itemBuilder: (context, index) {
-//     final user = _users[index];
-//     return ListTile(
-//       title: Text(user['name']),
-//       subtitle: Text(user['email']),
-//     );
-//   },
-// ),

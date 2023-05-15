@@ -129,7 +129,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // getNotes();
     // print(weather);
+    print(notes);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
@@ -269,50 +271,73 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: AppStyle.mainTitle,
                         ),
                       ),
-                      SizedBox(
-                        height: 310,
-                        child: notes.isNotEmpty
-                            ? ListView.builder(
-                                itemCount: notes.length,
-                                itemBuilder: (context, index) {
-                                  final note = notes[index];
-                                  return Container(
-                                    margin: const EdgeInsets.symmetric(
-                                        vertical: 10),
-                                    child: Row(
-                                      children: [
-                                        Image.asset(
-                                            'assets/images/img-example.png'),
-                                        Container(
-                                          margin: const EdgeInsets.symmetric(
-                                              horizontal: 20),
-                                          child: Text(
-                                            note.title,
-                                            style: GoogleFonts.poppins(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.normal,
-                                              color: AppStyle.mainColor,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              )
-                            : Center(
-                                child: Column(
-                                  children: [
-                                    Image.asset('assets/images/not_found.png',
-                                        height: 280),
-                                    Text(
-                                      'Belum ada catatan',
-                                      style: AppStyle.mainDescription,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                      )
+                      // SizedBox(
+                      //   height: 310,
+                      //   child: notes.isNotEmpty
+                      //       ? ListView.builder(
+                      //           itemCount: notes.length,
+                      //           itemBuilder: (context, index) {
+                      //             final note = notes[index];
+                      //             return Container(
+                      //               margin: const EdgeInsets.symmetric(
+                      //                   vertical: 10),
+                      //               child: Row(
+                      //                 children: [
+                      //                   FutureBuilder(
+                      //                     future: noteController
+                      //                         .getImageUrl(note.imgUrl),
+                      //                     builder: (BuildContext context,
+                      //                         AsyncSnapshot<String> snapshot) {
+                      //                       if (snapshot.connectionState ==
+                      //                               ConnectionState.done &&
+                      //                           snapshot.hasData) {
+                      //                         return ClipRRect(
+                      //                           borderRadius:
+                      //                               BorderRadius.circular(10),
+                      //                           child: Image(
+                      //                             image: NetworkImage(
+                      //                                 snapshot.data as String),
+                      //                             height: 80,
+                      //                           ),
+                      //                         );
+                      //                       } else {
+                      //                         return const Center(
+                      //                           child:
+                      //                               CircularProgressIndicator(),
+                      //                         );
+                      //                       }
+                      //                     },
+                      //                   ),
+                      //                   Container(
+                      //                     margin: const EdgeInsets.symmetric(
+                      //                         horizontal: 20),
+                      //                     child: Text(
+                      //                       note.title,
+                      //                       style: GoogleFonts.poppins(
+                      //                         fontSize: 20,
+                      //                         fontWeight: FontWeight.normal,
+                      //                         color: AppStyle.mainColor,
+                      //                       ),
+                      //                     ),
+                      //                   ),
+                      //                 ],
+                      //               ),
+                      //             );
+                      //           },
+                      //         )
+                      //       : Center(
+                      //           child: Column(
+                      //             children: [
+                      //               Image.asset('assets/images/not_found.png',
+                      //                   height: 280),
+                      //               Text(
+                      //                 'Belum ada catatan',
+                      //                 style: AppStyle.mainDescription,
+                      //               ),
+                      //             ],
+                      //           ),
+                      //         ),
+                      // ),
                     ],
                   ),
                 ),

@@ -31,14 +31,15 @@ class _NoteIndexScreenState extends State<NoteIndexScreen> {
     });
   }
 
-  void deleteNote(String noteId) async {
+  void deleteNote(String noteId, String imgUrl) async {
     await noteController.deleteNote(widget.uid, noteId);
+    await noteController.deleteImage(imgUrl);
     setState(() {
       notes.removeWhere((note) => note.id == noteId);
     });
   }
 
-  dynamic selected;
+  // dynamic selected;
 
   @override
   Widget build(BuildContext context) {
@@ -112,24 +113,35 @@ class _NoteIndexScreenState extends State<NoteIndexScreen> {
                               ),
                               child: Column(
                                 children: [
-                                  Container(
-                                    // child: IconButton(
-                                    //   icon: Icon(Icons.delete),
-                                    //   onPressed: () {
-                                    //     deleteNote(note.id);
-                                    //   },
-                                    // ),
-                                    height: 200,
-                                    decoration: const BoxDecoration(
-                                      image: DecorationImage(
-                                          image: AssetImage(
-                                              'assets/images/img-card.png'),
-                                          fit: BoxFit.cover),
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(15),
-                                        topRight: Radius.circular(15),
-                                      ),
-                                    ),
+                                  FutureBuilder(
+                                    future:
+                                        noteController.getImageUrl(note.imgUrl),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot<String> snapshot) {
+                                      if (snapshot.connectionState ==
+                                              ConnectionState.done &&
+                                          snapshot.hasData) {
+                                        return Container(
+                                          height: 200,
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              image: NetworkImage(
+                                                  snapshot.data as String),
+                                              fit: BoxFit.cover,
+                                            ),
+                                            borderRadius:
+                                                const BorderRadius.only(
+                                              topLeft: Radius.circular(15),
+                                              topRight: Radius.circular(15),
+                                            ),
+                                          ),
+                                        );
+                                      } else {
+                                        return const Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      }
+                                    },
                                   ),
                                   Container(
                                     padding: const EdgeInsets.all(10),
@@ -180,7 +192,8 @@ class _NoteIndexScreenState extends State<NoteIndexScreen> {
                                               ],
                                               onSelected: (value) {
                                                 if (value == "delete") {
-                                                  deleteNote(note.id);
+                                                  deleteNote(
+                                                      note.id, note.imgUrl);
                                                 } else if (value == "update") {
                                                   Navigator.push(
                                                     context,
@@ -263,78 +276,3 @@ class _NoteIndexScreenState extends State<NoteIndexScreen> {
     );
   }
 }
-
-// class NoteIndexScreen extends StatefulWidget {
-//   final String uid;
-//   const NoteIndexScreen({Key? key, required this.uid}) : super(key: key);
-
-//   @override
-//   State<NoteIndexScreen> createState() => _NoteIndexScreenState();
-// }
-
-// class _NoteIndexScreenState extends State<NoteIndexScreen> {
-//   NoteController noteController = NoteController();
-//   List<NoteModel> notes = [];
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     getNotes();
-//   }
-
-//   void getNotes() async {
-//     List<NoteModel> notes = await noteController.getNotes(widget.uid);
-//     setState(() {
-//       this.notes = notes;
-//     });
-//   }
-
-//   void deleteNote(String noteId) async {
-//     await noteController.deleteNote(widget.uid, noteId);
-//     setState(() {
-//       notes.removeWhere((note) => note.id == noteId);
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Notes'),
-//       ),
-//       body: ListView.builder(
-//         itemCount: notes.length,
-//         itemBuilder: (context, index) {
-//           final note = notes[index];
-//           return ListTile(
-//             title: Text(note.title),
-//             subtitle: Text(note.description),
-//             trailing: IconButton(
-//               icon: Icon(Icons.delete),
-//               onPressed: () {
-//                 deleteNote(note.id);
-//               },
-//             ),
-//           );
-//         },
-//       ),
-//       floatingActionButton: FloatingActionButton(
-//         child: Icon(Icons.add),
-//         onPressed: () {
-//           Navigator.push(
-//             context,
-//             MaterialPageRoute(
-//               builder: (context) => NoteCreateScreen(
-//                 uid: widget.uid,
-//               ),
-//             ),
-//           ).then((value) {
-//             if (value != null) {
-//               getNotes();
-//             }
-//           });
-//         },
-//       ),
-//     );
-//   }
-// }

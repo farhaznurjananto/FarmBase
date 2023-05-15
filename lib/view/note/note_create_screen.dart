@@ -1,19 +1,15 @@
 import 'dart:io';
 import 'package:farmbase/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:farmbase/controller/auth_controller.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:stylish_bottom_bar/model/bar_items.dart';
-import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 import 'package:farmbase/model/note_model.dart';
 import 'package:farmbase/controller/note_controller.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class NoteCreateScreen extends StatefulWidget {
   final String uid;
@@ -31,44 +27,89 @@ class _NoteCreateScreenState extends State<NoteCreateScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
+  dynamic selected;
+
+  File? _image;
+  String? fileName;
+  String? imgUrl;
+  String? imgUrlOld;
+  File? imageFile;
+
   @override
   void initState() {
     super.initState();
     if (widget.note != null) {
       _titleController.text = widget.note!.title;
       _descriptionController.text = widget.note!.description;
+      imgUrlOld = widget.note!.imgUrl;
+      imgUrl = widget.note!.imgUrl;
     }
   }
 
+  // late String imgUrl;
+
   void saveNote() async {
-    if (_formKey.currentState!.validate()) {
+    final directory = await getExternalStorageDirectory();
+    if (_image != null) {
+      fileName = DateTime.now().millisecondsSinceEpoch.toString();
+      imageFile = File('${directory!.path}/$fileName.jpg');
+      imgUrl = '/users/${widget.uid}/images/$fileName.jpg';
+    }
+    if (_formKey.currentState!.validate() && imgUrl != null) {
+      await imageFile?.writeAsBytes(await _image!.readAsBytes());
+      // final String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+      // final File imageFile = File('${directory!.path}/$fileName.jpg');
+      // final String imgUrl = '/users/${widget.uid}/images/$fileName.jpg';
+      // if (_image != null) {
+      // }
+      // await GallerySaver.saveImage(imageFile.path);
+      // if (_formKey.currentState!.validate()) {
       NoteModel note = NoteModel(
         id: widget.note != null ? widget.note!.id : DateTime.now().toString(),
         title: _titleController.text,
         description: _descriptionController.text,
         userId: widget.uid,
+        imgUrl: imgUrl as String,
       );
       if (widget.note != null) {
-        await noteController.updateNote(widget.uid, note);
+        await noteController.updateNote(widget.uid, note, imgUrl as String);
+        if (imgUrlOld != imgUrl) {
+          await noteController.deleteImage(imgUrlOld as String);
+          await noteController.uploadImage(
+              widget.uid, imageFile!, imgUrl as String);
+        }
       } else {
+        // await noteController.addNote(widget.uid, note, imageFile: _image);
         await noteController.addNote(widget.uid, note);
+        await noteController.uploadImage(
+            widget.uid, imageFile!, imgUrl as String);
       }
       Navigator.pop(context, true);
+      // }
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Gagal Melakukan Aksi!'),
+            content: const Text('Pasitikan Anda Mengisi Semua Form!'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
     }
   }
-
-  dynamic selected;
-
-  File? _image;
 
   Future<void> _getImage(ImageSource source) async {
     final pickedFile = await ImagePicker().pickImage(source: source);
     if (pickedFile != null) {
-      final directory = await getExternalStorageDirectory();
-      final String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-      final File imageFile = File('${directory!.path}/$fileName.jpg');
-      await imageFile.writeAsBytes(await pickedFile.readAsBytes());
-      await GallerySaver.saveImage(imageFile.path);
       final croppedFile = await ImageCropper().cropImage(
         sourcePath: pickedFile.path,
         uiSettings: [
@@ -88,6 +129,7 @@ class _NoteCreateScreenState extends State<NoteCreateScreen> {
       if (croppedFile != null) {
         setState(() {
           _image = File(croppedFile.path);
+          // imgUrl = croppedFile.path;
         });
       }
     }
@@ -176,7 +218,8 @@ class _NoteCreateScreenState extends State<NoteCreateScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      _image == null
+                                      _image == null && widget.note == null
+                                          // _image == null
                                           ? Container(
                                               margin:
                                                   const EdgeInsets.symmetric(
@@ -186,7 +229,44 @@ class _NoteCreateScreenState extends State<NoteCreateScreen> {
                                                 style: AppStyle.mainTitle,
                                               ),
                                             )
-                                          : Image.file(_image!),
+                                          // : Image.file(_image!),
+                                          : _image == null
+                                              ? FutureBuilder(
+                                                  future: noteController
+                                                      .getImageUrl(
+                                                          widget.note!.imgUrl),
+                                                  builder:
+                                                      (BuildContext context,
+                                                          AsyncSnapshot<String>
+                                                              snapshot) {
+                                                    if (snapshot.connectionState ==
+                                                            ConnectionState
+                                                                .done &&
+                                                        snapshot.hasData) {
+                                                      return ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                        child: Image(
+                                                          image: NetworkImage(
+                                                              snapshot.data
+                                                                  as String),
+                                                          width:
+                                                              double.infinity,
+                                                        ),
+                                                      );
+                                                    } else {
+                                                      return const Center(
+                                                        child:
+                                                            CircularProgressIndicator(),
+                                                      );
+                                                    }
+                                                  },
+                                                )
+                                              : ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  child: Image.file(_image!)),
                                       Container(
                                         margin: const EdgeInsets.only(top: 10),
                                         child: Row(

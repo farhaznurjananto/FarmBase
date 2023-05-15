@@ -18,7 +18,7 @@ class WeatherController {
     return Weather(
         location: location,
         description: description,
-        temperature: temperature,
+        temperature: double.parse('$temperature'),
         iconCode: iconCode);
   }
 }
