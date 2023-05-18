@@ -38,7 +38,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: const Text('Register Failed!'),
+                title: const Text('Register Gagal!'),
                 content: Text(result),
                 actions: [
                   TextButton(
@@ -60,9 +60,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: const Text('Register Successful'),
+                title: const Text('Register Berhasil!'),
                 content: const Text(
-                    'Your registration is successful. Please login to continue.'),
+                    'Pendaftaran Anda berhasil. Silahkan masuk untuk melanjutkan.'),
                 actions: [
                   TextButton(
                     onPressed: () {
@@ -176,10 +176,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         style: const TextStyle(fontSize: 16),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your Username';
+                            return 'Silakan masukkan Nama Pengguna Anda';
                           }
                           if (value.contains(' ')) {
-                            return 'Username cannot contain spaces';
+                            return 'Nama pengguna tidak boleh berisi spasi';
                           }
                           return null;
                         },
@@ -224,12 +224,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         style: const TextStyle(fontSize: 16),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your Email';
+                            return 'Masukkan email Anda';
                           }
                           final emailRegex =
                               RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,}$');
                           if (!emailRegex.hasMatch(value)) {
-                            return 'Please enter a valid Email';
+                            return 'Tolong masukkan email yang benar';
                           }
                           return null;
                         },
@@ -288,23 +288,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         style: const TextStyle(fontSize: 16),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your password';
+                            return 'Silakan masukkan kata sandi Anda';
                           }
                           if (value.length < 8) {
-                            return 'Password must be at least 8 characters long';
+                            return 'Panjang kata sandi minimal harus 8 karakter';
                           }
                           if (!value.contains(RegExp(r'[A-Z]'))) {
-                            return 'Password must contain at least one uppercase letter';
+                            return 'Kata sandi harus berisi setidaknya satu huruf besar';
                           }
                           if (!value.contains(RegExp(r'[a-z]'))) {
-                            return 'Password must contain at least one lowercase letter';
+                            return 'Kata sandi harus berisi setidaknya satu huruf kecil';
                           }
                           if (!value.contains(RegExp(r'[0-9]'))) {
-                            return 'Password must contain at least one number';
+                            return 'Kata sandi harus mengandung setidaknya satu angka';
                           }
                           if (!value
                               .contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-                            return 'Password must contain at least one special character';
+                            return 'Kata sandi harus mengandung setidaknya satu karakter khusus';
                           }
                           return null;
                         },

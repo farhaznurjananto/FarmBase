@@ -102,7 +102,7 @@ class _NoteCreateScreenState extends State<NoteCreateScreen> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Gagal Melakukan Aksi!'),
-            content: const Text('Pasitikan Anda Mengisi Semua Form!'),
+            content: const Text('Pastikan Anda Mengisi Semua Form!'),
             actions: [
               TextButton(
                 onPressed: () {
@@ -374,7 +374,7 @@ class _NoteCreateScreenState extends State<NoteCreateScreen> {
                                     style: const TextStyle(fontSize: 16),
                                     validator: (value) {
                                       if (value!.isEmpty) {
-                                        return 'Please enter a title';
+                                        return 'Harap masukkan judul';
                                       }
                                       return null;
                                     },
@@ -429,7 +429,7 @@ class _NoteCreateScreenState extends State<NoteCreateScreen> {
                                     style: const TextStyle(fontSize: 16),
                                     validator: (value) {
                                       if (value!.isEmpty) {
-                                        return 'Please enter a description';
+                                        return 'Harap masukkan deskripsi';
                                       }
                                       return null;
                                     },

@@ -34,8 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
             builder: (BuildContext context) {
               return AlertDialog(
                 title: const Text('Login Failed!'),
-                content:
-                    const Text('Pasitikan Email dan Password sudah benar!'),
+                content: const Text('Pastikan Email dan Password sudah benar!'),
                 actions: [
                   TextButton(
                     onPressed: () {
@@ -157,12 +156,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: const TextStyle(fontSize: 16),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your Email';
+                            return 'Masukkan email Anda';
                           }
                           final emailRegex =
                               RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,}$');
                           if (!emailRegex.hasMatch(value)) {
-                            return 'Please enter a valid Email';
+                            return 'Tolong masukkan email yang benar';
                           }
                           return null;
                         },
@@ -221,10 +220,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: const TextStyle(fontSize: 16),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your password';
-                          }
-                          if (value.length < 8) {
-                            return 'Password must be at least 8 characters long';
+                            return 'Silakan masukkan kata sandi Anda';
                           }
                           return null;
                         },
