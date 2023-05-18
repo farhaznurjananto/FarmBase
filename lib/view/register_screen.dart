@@ -1,10 +1,11 @@
-import 'package:farmbase/utils.dart';
-import 'package:farmbase/view/login_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:farmbase/controller/auth_controller.dart';
+
+import 'package:farmbase/utils.dart';
 import 'package:farmbase/model/user_model.dart';
+import 'package:farmbase/controller/auth_controller.dart';
+import 'package:farmbase/view/login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});

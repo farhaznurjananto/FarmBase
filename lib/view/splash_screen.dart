@@ -1,7 +1,5 @@
 import 'package:farmbase/utils.dart';
-import 'package:farmbase/view/home/home_screen.dart';
 import 'package:farmbase/view/login_screen.dart';
-import 'package:farmbase/view/tree.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatelessWidget {

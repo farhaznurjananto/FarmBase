@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:farmbase/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'package:farmbase/utils.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String uid;
@@ -295,27 +296,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           return null;
                         },
                       ),
-                      // ElevatedButton(
-                      //   onPressed: () {},
-                      //   style: ElevatedButton.styleFrom(
-                      //     minimumSize: const Size.fromHeight(10),
-                      //     padding: const EdgeInsets.symmetric(vertical: 15),
-                      //     elevation: 0,
-                      //     shape: RoundedRectangleBorder(
-                      //       borderRadius: BorderRadius.circular(10),
-                      //     ),
-                      //     textStyle: TextStyle(
-                      //       fontSize: 25,
-                      //       fontWeight: FontWeight.bold,
-                      //       color: AppStyle.bgColor,
-                      //     ),
-                      //     backgroundColor: AppStyle.mainColor,
-                      //   ),
-                      //   child: Text(
-                      //     'Update',
-                      //     style: AppStyle.mainTitle,
-                      //   ),
-                      // ),
                     ],
                   ),
                 ),

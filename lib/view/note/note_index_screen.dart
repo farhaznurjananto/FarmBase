@@ -1,14 +1,16 @@
-import 'package:farmbase/controller/note_controller.dart';
-import 'package:farmbase/utils.dart';
-import 'package:farmbase/view/note/note_create_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'package:farmbase/utils.dart';
 import 'package:farmbase/model/note_model.dart';
+import 'package:farmbase/controller/note_controller.dart';
+import 'package:farmbase/view/note/note_create_screen.dart';
 
 class NoteIndexScreen extends StatefulWidget {
-  // const NoteIndexScreen({super.key});
   final String uid;
-  const NoteIndexScreen({Key? key, required this.uid}) : super(key: key);
+  late List<NoteModel> notes;
+  NoteIndexScreen({Key? key, required this.uid, required this.notes})
+      : super(key: key);
 
   @override
   State<NoteIndexScreen> createState() => _NoteIndexScreenState();
@@ -16,7 +18,7 @@ class NoteIndexScreen extends StatefulWidget {
 
 class _NoteIndexScreenState extends State<NoteIndexScreen> {
   NoteController noteController = NoteController();
-  List<NoteModel> notes = [];
+  // List<NoteModel> notes = [];
 
   @override
   void initState() {
@@ -27,7 +29,9 @@ class _NoteIndexScreenState extends State<NoteIndexScreen> {
   void getNotes() async {
     List<NoteModel> notes = await noteController.getNotes(widget.uid);
     setState(() {
-      this.notes = notes;
+      // this.notes = notes;
+      widget.notes = notes;
+      // widget.notes;
     });
   }
 
@@ -35,11 +39,9 @@ class _NoteIndexScreenState extends State<NoteIndexScreen> {
     await noteController.deleteNote(widget.uid, noteId);
     await noteController.deleteImage(imgUrl);
     setState(() {
-      notes.removeWhere((note) => note.id == noteId);
+      widget.notes.removeWhere((note) => note.id == noteId);
     });
   }
-
-  // dynamic selected;
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +81,7 @@ class _NoteIndexScreenState extends State<NoteIndexScreen> {
                       Container(
                         margin: const EdgeInsets.symmetric(horizontal: 15),
                         child: Text(
-                          'Catatan Harian Anda',
+                          'Catatan anda',
                           style: AppStyle.mainTitle,
                         ),
                       ),
@@ -89,11 +91,11 @@ class _NoteIndexScreenState extends State<NoteIndexScreen> {
                 SizedBox(
                   width: double.infinity,
                   height: 590,
-                  child: notes.isNotEmpty
+                  child: widget.notes.isNotEmpty
                       ? ListView.builder(
-                          itemCount: notes.length,
+                          itemCount: widget.notes.length,
                           itemBuilder: (context, index) {
-                            final note = notes[index];
+                            final note = widget.notes[index];
                             return Container(
                               margin: const EdgeInsets.symmetric(vertical: 5),
                               decoration: BoxDecoration(
@@ -153,12 +155,17 @@ class _NoteIndexScreenState extends State<NoteIndexScreen> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text(
-                                              note.title,
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 24,
-                                                fontWeight: FontWeight.normal,
-                                                color: AppStyle.mainColor,
+                                            Expanded(
+                                              child: Text(
+                                                note.title,
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 24,
+                                                  fontWeight: FontWeight.normal,
+                                                  color: AppStyle.mainColor,
+                                                ),
+                                                softWrap: false,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
                                             PopupMenuButton(

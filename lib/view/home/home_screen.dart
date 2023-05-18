@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:farmbase/model/note_model.dart';
 import 'package:flutter/material.dart';
 import 'package:weather_icons/weather_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,14 +6,18 @@ import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:farmbase/utils.dart';
+import 'package:farmbase/model/note_model.dart';
 import 'package:farmbase/model/weather_model.dart';
 import 'package:farmbase/controller/weather_controller.dart';
 import 'package:farmbase/controller/note_controller.dart';
+import 'package:farmbase/view/note/note_create_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  // ketambahan uid
+  // ! KETAMBAHAN UID
   final String uid;
-  const HomeScreen({Key? key, required this.uid}) : super(key: key);
+  late List<NoteModel> notes;
+  HomeScreen({Key? key, required this.uid, required this.notes})
+      : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -78,9 +81,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Weather? weather;
   String? message;
   NoteController noteController = NoteController();
-  List<NoteModel> notes = [];
+  // List<NoteModel> notes = [];
 
-  // ketambahan ini juga buat akses collection
+  // ! KETAMBAHAN FIREBASE STORE
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   late List<Map<String, dynamic>> _users;
 
@@ -97,14 +100,19 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _users = [];
     _loadUserData(widget.uid);
-    getNotes();
     _requestLocationPermission();
+
+    // ! KETAMBAHAN GET NOTES
+    getNotes();
   }
 
+  // ! KETAMBAHAN GET NOTES
   void getNotes() async {
     List<NoteModel> notes = await noteController.getNotes(widget.uid);
     setState(() {
-      this.notes = notes;
+      widget.notes = notes;
+      // this.notes = notes;
+      // widget.notes;
     });
   }
 
@@ -129,9 +137,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // getNotes();
-    // print(weather);
-    print(notes);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
@@ -148,16 +153,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Text(
-                          //   message,
-                          //   style: AppStyle.mainContent,
-                          // ),
                           Text(
                             'Selamat Datang',
                             style: AppStyle.mainContent,
                           ),
                           Text(
-                            // _users[0]['name'],
                             _users.isNotEmpty ? _users[0]['name'] : '',
                             style: AppStyle.mainTitle,
                           )
@@ -190,9 +190,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             Container(
                               margin: const EdgeInsets.only(bottom: 20),
-                              // decoration: BoxDecoration(
-                              //     border:
-                              //         Border.all(color: AppStyle.accentColor)),
                               child: _weatherIconWidget(weather!.iconCode),
                             ),
                             Column(
@@ -271,73 +268,121 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: AppStyle.mainTitle,
                         ),
                       ),
-                      // SizedBox(
-                      //   height: 310,
-                      //   child: notes.isNotEmpty
-                      //       ? ListView.builder(
-                      //           itemCount: notes.length,
-                      //           itemBuilder: (context, index) {
-                      //             final note = notes[index];
-                      //             return Container(
-                      //               margin: const EdgeInsets.symmetric(
-                      //                   vertical: 10),
-                      //               child: Row(
-                      //                 children: [
-                      //                   FutureBuilder(
-                      //                     future: noteController
-                      //                         .getImageUrl(note.imgUrl),
-                      //                     builder: (BuildContext context,
-                      //                         AsyncSnapshot<String> snapshot) {
-                      //                       if (snapshot.connectionState ==
-                      //                               ConnectionState.done &&
-                      //                           snapshot.hasData) {
-                      //                         return ClipRRect(
-                      //                           borderRadius:
-                      //                               BorderRadius.circular(10),
-                      //                           child: Image(
-                      //                             image: NetworkImage(
-                      //                                 snapshot.data as String),
-                      //                             height: 80,
-                      //                           ),
-                      //                         );
-                      //                       } else {
-                      //                         return const Center(
-                      //                           child:
-                      //                               CircularProgressIndicator(),
-                      //                         );
-                      //                       }
-                      //                     },
-                      //                   ),
-                      //                   Container(
-                      //                     margin: const EdgeInsets.symmetric(
-                      //                         horizontal: 20),
-                      //                     child: Text(
-                      //                       note.title,
-                      //                       style: GoogleFonts.poppins(
-                      //                         fontSize: 20,
-                      //                         fontWeight: FontWeight.normal,
-                      //                         color: AppStyle.mainColor,
-                      //                       ),
-                      //                     ),
-                      //                   ),
-                      //                 ],
-                      //               ),
-                      //             );
-                      //           },
-                      //         )
-                      //       : Center(
-                      //           child: Column(
-                      //             children: [
-                      //               Image.asset('assets/images/not_found.png',
-                      //                   height: 280),
-                      //               Text(
-                      //                 'Belum ada catatan',
-                      //                 style: AppStyle.mainDescription,
-                      //               ),
-                      //             ],
-                      //           ),
-                      //         ),
-                      // ),
+                      SizedBox(
+                        height: 245,
+                        child: widget.notes.isNotEmpty
+                            ? ListView.builder(
+                                itemCount: widget.notes.length,
+                                itemBuilder: (context, index) {
+                                  final note = widget.notes[index];
+                                  return Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        vertical: 10),
+                                    child: Row(
+                                      children: [
+                                        FutureBuilder(
+                                          future: noteController
+                                              .getImageUrl(note.imgUrl),
+                                          builder: (BuildContext context,
+                                              AsyncSnapshot<String> snapshot) {
+                                            if (snapshot.connectionState ==
+                                                    ConnectionState.done &&
+                                                snapshot.hasData) {
+                                              return ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                child: Image(
+                                                  image: NetworkImage(
+                                                      snapshot.data as String),
+                                                  height: 80,
+                                                ),
+                                              );
+                                            } else {
+                                              return const Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              );
+                                            }
+                                          },
+                                        ),
+                                        Expanded(
+                                          child: Container(
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 20),
+                                            child: Text(
+                                              note.title,
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.normal,
+                                                color: AppStyle.mainColor,
+                                              ),
+                                              softWrap: false,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              )
+                            : Center(
+                                child: Column(
+                                  children: [
+                                    Image.asset('assets/images/not_found.png',
+                                        height: 200),
+                                    Text(
+                                      'Belum ada catatan',
+                                      style: AppStyle.mainDescription,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.symmetric(vertical: 10),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => NoteCreateScreen(
+                                        uid: widget.uid,
+                                      )),
+                            ).then((value) {
+                              if (value != null) {
+                                getNotes();
+                              }
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(10),
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            textStyle: TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                              color: AppStyle.bgColor,
+                            ),
+                            backgroundColor: AppStyle.mainColor,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.mode_edit_rounded),
+                              const SizedBox(width: 10),
+                              Text(
+                                'Buat Catatan',
+                                style: AppStyle.mainTitle,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),

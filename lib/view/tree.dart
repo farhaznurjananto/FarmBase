@@ -19,6 +19,7 @@ class Tree extends StatefulWidget {
 class _TreeState extends State<Tree> {
   NoteController noteController = NoteController();
   List<NoteModel> notes = [];
+
   int _currentIndex = 1;
 
   @override
@@ -36,10 +37,9 @@ class _TreeState extends State<Tree> {
 
   @override
   Widget build(BuildContext context) {
-    print(notes);
     final List<Widget> children = [
-      NoteIndexScreen(uid: widget.uid),
-      HomeScreen(uid: widget.uid),
+      NoteIndexScreen(uid: widget.uid, notes: notes),
+      HomeScreen(uid: widget.uid, notes: notes),
       ProfileScreen(uid: widget.uid),
     ];
 
@@ -65,6 +65,7 @@ class _TreeState extends State<Tree> {
           setState(
             () {
               _currentIndex = index;
+              getNotes();
             },
           );
         },

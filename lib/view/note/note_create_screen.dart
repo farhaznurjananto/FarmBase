@@ -1,15 +1,17 @@
 import 'dart:io';
-import 'package:farmbase/utils.dart';
+import 'package:farmbase/view/tree.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:gallery_saver/gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+// import 'package:gallery_saver/gallery_saver.dart';
+// import 'package:firebase_storage/firebase_storage.dart';
+
+import 'package:farmbase/utils.dart';
 import 'package:farmbase/model/note_model.dart';
 import 'package:farmbase/controller/note_controller.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 class NoteCreateScreen extends StatefulWidget {
   final String uid;
@@ -85,6 +87,14 @@ class _NoteCreateScreenState extends State<NoteCreateScreen> {
             widget.uid, imageFile!, imgUrl as String);
       }
       Navigator.pop(context, true);
+      // Navigator.pop(context,
+      //     MaterialPageRoute(builder: (context) => Tree(uid: widget.uid)));
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) => Tree(uid: widget.uid),
+      //   ),
+      // );
       // }
     } else {
       showDialog(
@@ -179,9 +189,10 @@ class _NoteCreateScreenState extends State<NoteCreateScreen> {
                             ),
                           ),
                           Container(
+                            // ignore: prefer_const_constructors
                             margin: EdgeInsets.symmetric(horizontal: 20),
                             child: Text(
-                              'Buat catatan baru',
+                              'Catatan',
                               style: AppStyle.mainTitle,
                             ),
                           )
@@ -464,102 +475,3 @@ class _NoteCreateScreenState extends State<NoteCreateScreen> {
     );
   }
 }
-
-// class NoteCreateScreen extends StatefulWidget {
-//   final String uid;
-//   // final String userId;
-//   final NoteModel? note;
-
-//   // const NoteCreateScreen({Key? key, required this.uid, required this.note})
-//   const NoteCreateScreen({Key? key, required this.uid, this.note})
-//       : super(key: key);
-//   // NoteCreateScreen({this.userId, this.note});
-
-//   @override
-//   State<NoteCreateScreen> createState() => _NoteCreateScreenState();
-// }
-
-// class _NoteCreateScreenState extends State<NoteCreateScreen> {
-//   NoteController noteController = NoteController();
-//   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-//   final TextEditingController _titleController = TextEditingController();
-//   final TextEditingController _descriptionController = TextEditingController();
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     if (widget.note != null) {
-//       _titleController.text = widget.note!.title;
-//       _descriptionController.text = widget.note!.description;
-//     }
-//   }
-
-//   void saveNote() async {
-//     if (_formKey.currentState!.validate()) {
-//       NoteModel note = NoteModel(
-//         id: widget.note != null ? widget.note!.id : DateTime.now().toString(),
-//         title: _titleController.text,
-//         description: _descriptionController.text,
-//         userId: widget.uid,
-//       );
-//       if (widget.note != null) {
-//         await noteController.updateNote(widget.uid, note);
-//       } else {
-//         await noteController.addNote(widget.uid, note);
-//       }
-//       Navigator.pop(context, true);
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text(widget.note != null ? 'Edit Note' : 'Add Note'),
-//       ),
-//       body: SingleChildScrollView(
-//         child: Padding(
-//           padding: EdgeInsets.all(16.0),
-//           child: Form(
-//             key: _formKey,
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.stretch,
-//               children: <Widget>[
-//                 TextFormField(
-//                   controller: _titleController,
-//                   decoration: InputDecoration(
-//                     labelText: 'Title',
-//                   ),
-//                   validator: (value) {
-//                     if (value!.isEmpty) {
-//                       return 'Please enter a title';
-//                     }
-//                     return null;
-//                   },
-//                 ),
-//                 SizedBox(height: 16.0),
-//                 TextFormField(
-//                   controller: _descriptionController,
-//                   decoration: InputDecoration(
-//                     labelText: 'Description',
-//                   ),
-//                   validator: (value) {
-//                     if (value!.isEmpty) {
-//                       return 'Please enter a description';
-//                     }
-//                     return null;
-//                   },
-//                 ),
-//                 SizedBox(height: 16.0),
-//                 ElevatedButton(
-//                   child: Text('Save'),
-//                   onPressed: saveNote,
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }

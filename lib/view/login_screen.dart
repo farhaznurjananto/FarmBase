@@ -1,10 +1,11 @@
-import 'package:farmbase/controller/auth_controller.dart';
-import 'package:farmbase/utils.dart';
-import 'package:farmbase/view/register_screen.dart';
-import 'package:farmbase/view/tree.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'package:farmbase/utils.dart';
+import 'package:farmbase/controller/auth_controller.dart';
+import 'package:farmbase/view/register_screen.dart';
+import 'package:farmbase/view/tree.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -25,7 +26,6 @@ class _LoginScreenState extends State<LoginScreen> {
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
     String? result = await _userController.login(email, password);
-    // if (result != null) {
     if (result == null) {
       setState(
         () {
