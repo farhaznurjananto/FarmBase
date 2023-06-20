@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:encrypt/encrypt.dart' as encrypt;
 
 import 'package:farmbase/utils.dart';
 import 'package:farmbase/controller/auth_controller.dart';
@@ -20,11 +21,26 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  String _passwordEncrypted = '';
+
   final AuthController _userController = AuthController();
 
+  final key = encrypt.Key.fromLength(32);
+  final iv = encrypt.IV.fromLength(16);
+
+  void _encryptText() {
+    final encrypter = encrypt.Encrypter(encrypt.AES(key));
+
+    final encrypted = encrypter.encrypt(_passwordController.text, iv: iv);
+    setState(() {
+      _passwordEncrypted = encrypted.base64;
+    });
+  }
+
   void _login() async {
+    _encryptText();
     String email = _emailController.text.trim();
-    String password = _passwordController.text.trim();
+    String password = _passwordEncrypted;
     String? result = await _userController.login(email, password);
     if (result == null) {
       setState(

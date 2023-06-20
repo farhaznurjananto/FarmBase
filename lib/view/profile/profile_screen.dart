@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:encrypt/encrypt.dart' as encrypt;
 
 import 'package:farmbase/utils.dart';
 
@@ -16,6 +17,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final List<Map<String, dynamic>> _users = [];
 
+    final key = encrypt.Key.fromLength(32);
+  final iv = encrypt.IV.fromLength(16);
+
+  String _decryptText(String text) {
+    final encrypter = encrypt.Encrypter(encrypt.AES(key));
+
+    final decrypted = encrypter.decrypt64(text, iv: iv);
+    // setState(() {
+    //   _passwordDencrypted = decrypted;
+    // });
+    return decrypted;
+  }
+
   void _loadUserData(String uid) async {
     final docSnapshot = await _firestore.collection('users').doc(uid).get();
     final userData = docSnapshot.data() as Map<String, dynamic>;
@@ -24,7 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       // Set value pada controller setelah data pengguna berhasil dimuat dari Firestore
       _usernameController.text = userData['name'];
       _emailController.text = userData['email'];
-      _passwordController.text = userData['password'];
+      _passwordController.text = _decryptText(userData['password']);
     });
   }
 

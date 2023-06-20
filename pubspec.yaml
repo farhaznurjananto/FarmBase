@@ -49,6 +49,7 @@ dependencies:
   geolocator: ^9.0.2
   permission_handler: ^10.2.0
   weather_icons: ^3.0.0
+  encrypt: ^5.0.1
 
 dev_dependencies:
   flutter_test:

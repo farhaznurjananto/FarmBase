@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:encrypt/encrypt.dart' as encrypt;
 
 import 'package:farmbase/utils.dart';
 import 'package:farmbase/model/user_model.dart';
@@ -20,14 +21,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  String _passwordEncrypted = '';
 
   final AuthController _userController = AuthController();
 
+  final key = encrypt.Key.fromLength(32);
+  final iv = encrypt.IV.fromLength(16);
+
+  void _encryptText() {
+    final encrypter = encrypt.Encrypter(encrypt.AES(key));
+
+    final encrypted = encrypter.encrypt(_passwordController.text, iv: iv);
+    setState(() {
+      _passwordEncrypted = encrypted.base64;
+    });
+  }
+
+  // void _decryptText() {
+  //   final encrypter = encrypt.Encrypter(encrypt.AES(key));
+
+  //   final decrypted = encrypter.decrypt64(_encryptedText, iv: iv);
+  //   setState(() {
+  //     _decryptedText = decrypted;
+  //   });
+
   void _register() async {
+    _encryptText();
+
     UserModel user = UserModel(
       username: _usernameController.text.trim(),
       email: _emailController.text.trim(),
-      password: _passwordController.text.trim(),
+      password: _passwordEncrypted,
     );
 
     String? result = await _userController.register(user);
